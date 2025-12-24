@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react"
 import { useChatStore } from "@/lib/chat-store"
 import { Send, Loader2, Sparkles, Code, FileText, Lightbulb, Zap } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Button } from "./ui/button"
 
 const suggestions = [
   {
@@ -121,11 +122,11 @@ export function LandingView() {
               className="max-h-[200px] min-h-[70px] w-full resize-none bg-transparent px-6 py-5 pr-16 text-lg placeholder:text-muted-foreground/60 focus:outline-none disabled:opacity-50"
               autoFocus
             />
-            <button
+            <Button
               onClick={() => handleSubmit()}
               disabled={!input.trim() || loading}
               className={cn(
-                "absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-2xl transition-all",
+                "cursor-pointer absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-2xl transition-all",
                 "bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 text-white shadow-xl shimmer-effect",
                 "hover:shadow-[0_0_30px_rgba(76,158,245,0.5)] hover:scale-110 active:scale-95",
                 "disabled:opacity-40 disabled:shadow-lg disabled:cursor-not-allowed disabled:hover:scale-100",
@@ -133,7 +134,7 @@ export function LandingView() {
             >
               {loading ? <Loader2 className="h-6 w-6 animate-spin" strokeWidth={2.5} /> : <Send className="h-6 w-6" strokeWidth={2.5} />}
               <span className="sr-only">Send message</span>
-            </button>
+            </Button>
           </div>
           <p className="mt-4 text-center text-sm text-muted-foreground/70">
             Press <kbd className="rounded-lg bg-muted/50 px-2 py-1 font-mono text-xs ring-1 ring-border/30">Enter</kbd> to send

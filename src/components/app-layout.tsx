@@ -22,7 +22,7 @@ export function AppLayout() {
 
       <div className="flex flex-1 flex-col min-w-0">
         {/* Header */}
-        <header className="flex items-center justify-between gap-3 border-b border-zinc-200/30 dark:border-zinc-800/30 px-6 py-4 bg-white/60 dark:bg-black/60 backdrop-blur-2xl supports-[backdrop-filter]:bg-white/40 dark:supports-[backdrop-filter]:bg-black/40">
+        <header className="flex items-center justify-between gap-3 border-b border-zinc-200/30 dark:border-zinc-800/30 px-6 pt-4 pb-2 bg-white/60 dark:bg-black/60 backdrop-blur-2xl supports-backdrop-filter:bg-white/40 dark:supports-backdrop-filter:bg-black/40">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" className="lg:hidden hover:scale-105 rounded-xl" onClick={() => setSidebarOpen(true)}>
               <Menu className="h-5 w-5" />

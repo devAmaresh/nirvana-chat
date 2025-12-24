@@ -2,7 +2,7 @@ import type { Message } from "@/lib/chat-store";
 import { cn } from "@/lib/utils";
 import { CopyButton } from "@/components/copy-button";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
-import { User, Sparkles } from "lucide-react";
+import { Brain } from "lucide-react";
 
 interface MessageBubbleProps {
   message: Message;
@@ -16,22 +16,39 @@ export function MessageBubble({ message, isLoading }: MessageBubbleProps) {
   return (
     <div
       className={cn(
-        "group flex gap-5 animate-message-in",
+        "group flex gap-3 animate-message-in",
         isUser ? "flex-row-reverse" : "flex-row"
       )}
     >
       {/* Avatar */}
       {!isUser && (
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 shadow-xl ring-2 ring-blue-500/30">
-          <Sparkles className="h-5 w-5 text-white" strokeWidth={2.5} />
+        <div
+          className="
+      flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl
+
+      bg-white/30 backdrop-blur-lg
+      border border-white/40
+      shadow-md
+
+      dark:bg-white/10
+      dark:border-white/20
+      dark:shadow-lg
+    "
+        >
+          <Brain
+            className="h-5 w-5 text-slate-800 dark:text-white"
+            strokeWidth={2.5}
+          />
         </div>
       )}
 
       {/* Message Content */}
       <div
         className={cn(
-          "flex min-w-0 max-w-[75%] flex-col gap-2",
-          isUser ? "items-end" : "items-start"
+          "flex flex-col gap-2",
+          isUser 
+            ? "items-end min-w-0 max-w-[75%]" 
+            : "items-start w-full max-w-[90%]"
         )}
       >
         {!isUser && (
@@ -41,10 +58,10 @@ export function MessageBubble({ message, isLoading }: MessageBubbleProps) {
         )}
         <div
           className={cn(
-            "relative overflow-hidden rounded-2xl ",
+            "relative w-full",
             isUser
-              ? "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border-zinc-200/50 dark:border-zinc-800/50 shadow-lg px-5 py-4 backdrop-blur-xl border transition-all"
-              : ""
+              ? "rounded-2xl bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border-zinc-200/50 dark:border-zinc-800/50 shadow-lg px-5 py-4 backdrop-blur-xl border transition-all"
+              : "overflow-x-auto"
           )}
         >
           {showLoading ? (
@@ -63,7 +80,7 @@ export function MessageBubble({ message, isLoading }: MessageBubbleProps) {
               {message.content}
             </p>
           ) : (
-            <div className="prose prose-sm dark:prose-invert max-w-none text-left prose-headings:font-bold prose-a:text-blue-400 dark:prose-a:text-blue-400 prose-code:text-blue-400">
+            <div className="prose prose-sm dark:prose-invert max-w-full text-left prose-headings:font-bold prose-a:text-blue-400 dark:prose-a:text-blue-400 prose-code:text-blue-400 break-words">
               <MarkdownRenderer content={message.content} />
             </div>
           )}

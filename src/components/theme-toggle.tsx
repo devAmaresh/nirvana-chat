@@ -10,7 +10,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className="h-9 w-9 rounded-xl transition-all hover:scale-105 hover:bg-accent"
+      className="h-9 w-9 rounded-xl transition-all hover:scale-105 hover:bg-accent cursor-pointer"
       aria-label="Toggle theme"
     >
       {theme === "dark" ? (
