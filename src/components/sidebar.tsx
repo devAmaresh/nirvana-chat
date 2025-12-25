@@ -15,12 +15,10 @@ import {
 import { getPersonaById } from "@/lib/personas";
 import { useThemeStore } from "@/lib/theme-store";
 
-
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -30,41 +28,34 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { chats, deleteChat } = useChatStore();
   const { theme } = useThemeStore();
 
-
   const handleNewChat = () => {
-    navigate('/');
+    navigate("/");
     onClose();
   };
-
 
   const handleSelectChat = (id: string) => {
     navigate(`/c/${id}`);
     onClose();
   };
 
-
   const handleDeleteChat = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     deleteChat(id);
     if (chatId === id) {
-      navigate('/');
+      navigate("/");
     }
   };
 
-
   const handleSpacesClick = () => {
-    navigate('/spaces');
+    navigate("/spaces");
     onClose();
   };
-
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
 
-
-  const isSpacesActive = location.pathname.startsWith('/spaces');
-
+  const isSpacesActive = location.pathname.startsWith("/spaces");
 
   return (
     <>
@@ -75,7 +66,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           onClick={onClose}
         />
       )}
-
 
       {/* Sidebar */}
       <aside
@@ -90,10 +80,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           <div className="flex items-center gap-3 overflow-hidden">
             {!isCollapsed && (
               <div className="flex items-center gap-2">
-                <img 
-                  src={theme === "dark" ? "/logo-dark.png" : "/logo-light.png"} 
-                  alt="Logo" 
-                  className="h-6 w-6" 
+                <img
+                  src={theme === "dark" ? "/logo-dark.png" : "/logo-light.png"}
+                  alt="Logo"
+                  className="h-6 w-6"
                 />
                 <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                   Nirvana
@@ -122,7 +112,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           </div>
         </div>
 
-
         {/* New Chat Button */}
         <div className={cn("p-3", isCollapsed && "px-2")}>
           <button
@@ -137,7 +126,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             {!isCollapsed && "New Chat"}
           </button>
         </div>
-
 
         {/* Spaces Navigation */}
         <div className={cn("px-3 pb-2", isCollapsed && "px-2")}>
@@ -157,7 +145,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           </button>
         </div>
 
-
         {/* Chat List */}
         <div
           className={cn(
@@ -172,8 +159,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 Recent
               </div>
             )}
-            
-            {chats.length === 0 ? (
+
+            {chats.length === 0 && !isCollapsed ? (
               <div className="flex flex-col items-center justify-center py-12 text-center px-4">
                 <div
                   className={cn(
@@ -189,16 +176,15 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     strokeWidth={2}
                   />
                 </div>
-                {!isCollapsed && (
-                  <>
-                    <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-                      No chats yet
-                    </p>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-1">
-                      Start a conversation
-                    </p>
-                  </>
-                )}
+
+                <>
+                  <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+                    No chats yet
+                  </p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-1">
+                    Start a conversation
+                  </p>
+                </>
               </div>
             ) : (
               <div className="space-y-0.5">
@@ -217,10 +203,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                       )}
                       title={isCollapsed ? chat.title : ""}
                     >
-                      {isCollapsed && (<MessageSquare className="h-4 w-4" strokeWidth={2}/>)}
+                      {isCollapsed && (
+                        <MessageSquare className="h-4 w-4" strokeWidth={2} />
+                      )}
                       {!isCollapsed && (
                         <>
-                        <span className="text-base shrink-0">{persona.emoji}</span>
+                          <span className="text-base shrink-0">
+                            {persona.emoji}
+                          </span>
                           <span className="flex-1 truncate text-sm font-medium">
                             {chat.title}
                           </span>
@@ -240,7 +230,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             )}
           </div>
         </div>
-
 
         {/* Footer */}
         {!isCollapsed && (
