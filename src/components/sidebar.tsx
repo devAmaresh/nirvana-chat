@@ -12,7 +12,7 @@ import {
   PanelLeft,
   LayoutGrid,
 } from "lucide-react";
-import { getPersonaById } from "@/lib/personas";
+// import { getPersonaById } from "@/lib/personas";
 import { useThemeStore } from "@/lib/theme-store";
 
 interface SidebarProps {
@@ -188,29 +188,23 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               </div>
             ) : (
               <div className="space-y-0.5">
-                {chats.map((chat, _index) => {
-                  const persona = getPersonaById(chat.personaId);
-                  return (
-                    <button
-                      key={chat.id}
-                      onClick={() => handleSelectChat(chat.id)}
-                      className={cn(
-                        "group flex w-full items-center gap-2 rounded-lg py-2 text-left transition-colors",
-                        isCollapsed ? "justify-center px-0" : "px-3",
-                        chatId === chat.id
-                          ? "bg-emerald-50 dark:bg-emerald-900/20 text-zinc-900 dark:text-zinc-100"
-                          : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                      )}
-                      title={isCollapsed ? chat.title : ""}
-                    >
-                      {isCollapsed && (
-                        <MessageSquare className="h-4 w-4" strokeWidth={2} />
-                      )}
-                      {!isCollapsed && (
+                {!isCollapsed &&
+                  chats.map((chat, _index) => {
+                    // const persona = getPersonaById(chat.personaId);
+                    return (
+                      <button
+                        key={chat.id}
+                        onClick={() => handleSelectChat(chat.id)}
+                        className={cn(
+                          "group flex w-full items-center gap-2 rounded-lg py-2 text-left transition-colors",
+                          isCollapsed ? "justify-center px-0" : "px-3",
+                          chatId === chat.id
+                            ? "bg-emerald-50 dark:bg-emerald-900/20 text-zinc-900 dark:text-zinc-100"
+                            : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                        )}
+                        title={isCollapsed ? chat.title : ""}
+                      >
                         <>
-                          <span className="text-base shrink-0">
-                            {persona.emoji}
-                          </span>
                           <span className="flex-1 truncate text-sm font-medium">
                             {chat.title}
                           </span>
@@ -222,10 +216,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                             <Trash2 className="h-3.5 w-3.5" strokeWidth={2} />
                           </button>
                         </>
-                      )}
-                    </button>
-                  );
-                })}
+                      </button>
+                    );
+                  })}
               </div>
             )}
           </div>
