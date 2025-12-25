@@ -5,12 +5,12 @@ import { useChatStore } from "@/lib/chat-store";
 import { ArrowLeft, Trash2, MessageSquare, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatInput } from "@/components/chat-input";
-import { useMemo, useCallback, useEffect } from "react";
+import { useMemo, useCallback } from "react";
 
 export function SpaceDetailView() {
   const { personaId } = useParams<{ personaId: string }>();
   const navigate = useNavigate();
-  const { getChatsByPersona, deleteChat } = useChatStore();
+  const {deleteChat } = useChatStore();
 
   const persona = useMemo(
     () => (personaId ? getPersonaById(personaId) : null),
