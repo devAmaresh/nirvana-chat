@@ -59,7 +59,7 @@ export function ChatInput({ chatId, personaId, onMessageSent }: ChatInputProps) 
   return (
     <div className="border-t border-zinc-200/30 dark:border-zinc-800/30 bg-white/60 dark:bg-black/60 backdrop-blur-2xl supports-backdrop-filter:bg-white/40 dark:supports-backdrop-filter:bg-black/40 px-3 py-2">
       <div className="max-w-4xl mx-auto">
-        <div className="relative flex items-end gap-3 rounded-3xl border border-emerald-500/20 dark:border-emerald-500/30 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl shadow-2xl shadow-emerald-500/10 p-1.5">
+        <div className="relative flex items-end gap-3 rounded-4xl border border-emerald-500/20 dark:border-emerald-500/20 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl shadow-2xl shadow-emerald-500/10 p-1.5">
           <textarea
             ref={textareaRef}
             value={input}
@@ -75,7 +75,7 @@ export function ChatInput({ chatId, personaId, onMessageSent }: ChatInputProps) 
               onClick={handleStop} 
               size="icon" 
               variant="ghost"
-              className="h-12 w-12 shrink-0 hover:bg-red-500/20 hover:text-red-500 transition-all hover:scale-110 active:scale-95 rounded-2xl"
+              className="h-12 w-12 shrink-0 hover:bg-red-500/20 hover:text-red-500 transition-all hover:scale-110 active:scale-95 rounded-4xl"
               title="Stop generation"
             >
               <Square className="h-5 w-5 fill-current" strokeWidth={2.5} />
@@ -86,7 +86,7 @@ export function ChatInput({ chatId, personaId, onMessageSent }: ChatInputProps) 
               onClick={handleSubmit} 
               disabled={!input.trim()} 
               size="icon" 
-              className="h-12 w-12 shrink-0 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 shadow-2xl hover:shadow-emerald-500/50 transition-all shimmer-effect hover:scale-110 active:scale-95 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-12 w-12 shrink-0 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 shadow-2xl hover:shadow-emerald-500/50 transition-all shimmer-effect hover:scale-110 active:scale-95 rounded-4xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Send className="h-5 w-5" strokeWidth={2.5} />
               <span className="sr-only">Send message</span>
@@ -94,7 +94,7 @@ export function ChatInput({ chatId, personaId, onMessageSent }: ChatInputProps) 
           )}
         </div>
         <p className="mt-2 text-center text-sm text-zinc-500/40 dark:text-zinc-400/40">
-          Press <kbd className="rounded-lg bg-emerald-500/10 dark:bg-emerald-500/20 px-2 py-1 font-mono text-xs ring-1 ring-emerald-500/20 text-emerald-600 dark:text-emerald-400">Enter</kbd> to send • <kbd className="rounded-lg bg-emerald-500/10 dark:bg-emerald-500/20 px-2 py-1 font-mono text-xs ring-1 ring-emerald-500/20 text-emerald-600 dark:text-emerald-400">Shift+Enter</kbd> for new line
+          Press <kbd className="rounded-lg bg-emerald-500/10 dark:bg-emerald-500/20 px-2 py-1 font-mono text-xs ring-1 ring-emerald-500/20 text-emerald-400 dark:text-emerald-600">Enter</kbd> to send • <kbd className="rounded-lg bg-emerald-500/10 dark:bg-emerald-500/10 px-2 py-1 font-mono text-xs ring-1 ring-emerald-500/20 text-emerald-400 dark:text-emerald-700">Shift+Enter</kbd> for new line
         </p>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { useChatStore } from "@/lib/chat-store"
-import { Code, FileText, Lightbulb, Zap, ArrowRight } from "lucide-react"
+import { Code, FileText, Lightbulb, Zap, ArrowRight, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ChatInput } from "./chat-input"
 
@@ -66,16 +66,18 @@ export function LandingView() {
       <div className="flex w-full max-w-4xl flex-col items-center space-y-10">
         {/* Hero Section - Compact & Modern */}
         <div className="text-center space-y-3 w-full">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-zinc-100 to-zinc-50 dark:from-zinc-900 dark:to-zinc-800 border border-zinc-200 dark:border-zinc-700 mb-4">
+            <Sparkles className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Powered by Gemini 2.5 Flash</span>
+          </div>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
             Nirvana Chat
           </h1>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
-            Powered by Gemini 2.5 Flash — Fast, intelligent conversations
-          </p>
+          
         </div>
 
         {/* Input Area - Cleaner */}
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-3xl">
           <ChatInput chatId={null} onMessageSent={handleMessageSent} />  
         </div>
 

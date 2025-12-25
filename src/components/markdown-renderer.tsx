@@ -2,6 +2,7 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { CopyButton } from "@/components/copy-button"
 import { useEffect, useState, useRef, memo } from "react"
+import { useThemeStore } from "@/lib/theme-store"
 
 interface MarkdownRendererProps {
   content: string
@@ -11,7 +12,7 @@ const CodeBlock = memo(function CodeBlock({ code, language }: { code: string; la
   const [highlightedCode, setHighlightedCode] = useState<string>("")
   const [isLoading, setIsLoading] = useState(true)
   const codeRef = useRef<HTMLDivElement>(null)
-
+  const {theme} = useThemeStore()
   useEffect(() => {
     let cancelled = false
 
@@ -20,7 +21,7 @@ const CodeBlock = memo(function CodeBlock({ code, language }: { code: string; la
         const { codeToHtml } = await import("shiki")
         const html = await codeToHtml(code, {
           lang: language || "text",
-          theme: "github-dark",
+          theme: theme === 'dark' ? 'catppuccin-mocha' : 'light-plus',
         })
         if (!cancelled) {
           setHighlightedCode(html)
@@ -42,9 +43,9 @@ const CodeBlock = memo(function CodeBlock({ code, language }: { code: string; la
   }, [code, language])
 
   return (
-    <div className="group/code relative my-4 overflow-hidden rounded-xl border border-zinc-200/50 dark:border-zinc-800/50 bg-[#0d1117] shadow-lg">
+    <div className="group/code relative my-4 overflow-hidden rounded-xl border border-zinc-200/50 dark:border-zinc-800/50 dark:bg-[#0d1117] bg-[#f6f8fa] shadow-lg">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-zinc-200/30 dark:border-zinc-800/30 bg-[#161b22] px-4 py-2">
+      <div className="flex items-center justify-between border-b border-zinc-200/30 dark:border-zinc-800/30 dark:bg-[#161b22] bg-[#d1d1d1] px-4 py-2">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5">
             <div className="h-3 w-3 rounded-full bg-[#ff5f57]" />

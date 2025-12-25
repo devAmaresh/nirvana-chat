@@ -44,7 +44,7 @@ export function ChatWindow({ chatId }: ChatWindowProps) {
   return (
     <div className="flex-1 overflow-y-auto bg-gradient-to-b from-white via-white to-white/20 dark:from-black dark:via-black dark:to-zinc-900/20">
       <div className="max-w-4xl mx-auto px-6 py-8 pb-24">
-        <div className="space-y-8">
+        <div className="space-y-2">
           {messages.map((message, index) => (
             <MessageBubble
               key={message.id}

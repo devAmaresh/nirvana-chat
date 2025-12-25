@@ -3,9 +3,11 @@ import type { Message } from "@/lib/chat-store"
 import { useChatStore } from "@/lib/chat-store"
 import { cn } from "@/lib/utils"
 import { CopyButton } from "@/components/copy-button"
+import { DownloadButton } from "@/components/downloadButton"
 import { MarkdownRenderer } from "@/components/markdown-renderer"
-import { Brain, RefreshCw, Edit2 } from "lucide-react"
+import { Brain, RefreshCw, Edit2, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
+
 
 interface MessageBubbleProps {
   chatId: string
@@ -14,6 +16,7 @@ interface MessageBubbleProps {
   isLastMessage?: boolean
   isLastUserMessage?: boolean
 }
+
 
 export function MessageBubble({ 
   chatId, 
@@ -28,16 +31,19 @@ export function MessageBubble({
   const [isEditing, setIsEditing] = useState(false)
   const [editedContent, setEditedContent] = useState(message.content)
 
+
   const handleRegenerate = () => {
     if (!loading) {
       regenerateLastMessage(chatId)
     }
   }
 
+
   const handleEdit = () => {
     setIsEditing(true)
     setEditedContent(message.content)
   }
+
 
   const handleSaveEdit = async () => {
     if (editedContent.trim() && editedContent !== message.content) {
@@ -48,10 +54,12 @@ export function MessageBubble({
     }
   }
 
+
   const handleCancelEdit = () => {
     setIsEditing(false)
     setEditedContent(message.content)
   }
+
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
@@ -63,6 +71,7 @@ export function MessageBubble({
     }
   }
 
+
   return (
     <div
       className={cn(
@@ -72,10 +81,11 @@ export function MessageBubble({
     >
       {/* Avatar */}
       {!isUser && (
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/20 to-green-500/20 border border-emerald-500/30 shadow-lg shadow-emerald-500/20 backdrop-blur-lg">
-          <Brain className="h-5 w-5 text-emerald-600 dark:text-emerald-400" strokeWidth={2.5} />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-4xl bg-emerald-500/20 border border-emerald-500/10 shadow-lg shadow-emerald-500/20 backdrop-blur-lg">
+          <Brain className="h-5 w-5 text-emerald-600 dark:text-emerald-500" strokeWidth={1.5} />
         </div>
       )}
+
 
       {/* Message Content */}
       <div
@@ -83,20 +93,15 @@ export function MessageBubble({
           "flex flex-col gap-2",
           isUser 
             ? isEditing 
-              ? "items-end w-full max-w-[75%]" // Full width when editing
-              : "items-end max-w-[75%]" // Natural width when not editing
+              ? "items-end w-full max-w-[75%]"
+              : "items-end max-w-[75%]"
             : "items-start w-full max-w-[90%]"
         )}
       >
-        {!isUser && (
-          <span className="px-1 text-sm font-bold text-emerald-600 dark:text-emerald-400">
-            AI Assistant
-          </span>
-        )}
+       
         
         {/* Message or Edit Mode */}
         {isUser && isEditing ? (
-          // Edit Mode - Full width
           <div className="w-full space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="relative rounded-tl-2xl rounded-b-2xl bg-gradient-to-r from-emerald-500/10 to-green-500/10 border border-emerald-500/30 dark:border-emerald-500/40 shadow-lg backdrop-blur-xl p-1">
               <textarea
@@ -115,7 +120,6 @@ export function MessageBubble({
               />
             </div>
             
-            {/* Action Buttons */}
             <div className="flex items-center justify-end gap-2">
               <Button
                 onClick={handleCancelEdit}
@@ -143,12 +147,11 @@ export function MessageBubble({
             </div>
           </div>
         ) : (
-          // Normal Message Display - Natural width
           <div
             className={cn(
               "relative transition-all duration-300",
               isUser
-                ? "rounded-tl-2xl rounded-b-2xl bg-gradient-to-r from-emerald-500/10 to-green-500/10 text-zinc-900 dark:text-zinc-100 border-emerald-500/30 dark:border-emerald-500/40 shadow-lg px-5 py-3 backdrop-blur-xl border"
+                ? "rounded-tl-4xl rounded-tr-xl rounded-b-4xl bg-gradient-to-r from-emerald-500/10 to-green-500/10 text-zinc-900 dark:text-zinc-100 border-emerald-500/30 dark:border-emerald-500/10 shadow-lg px-5 py-3 backdrop-blur-xl border"
                 : "w-full overflow-x-auto"
             )}
           >
@@ -168,28 +171,29 @@ export function MessageBubble({
                 {message.content}
               </p>
             ) : (
-              <div className="prose prose-sm dark:prose-invert max-w-full text-left prose-headings:font-bold prose-a:text-emerald-500 dark:prose-a:text-emerald-400 prose-code:text-emerald-500 break-words">
+              <div className="prose prose-sm dark:prose-invert max-w-full text-left prose-headings:font-bold prose-a:text-emerald-500 dark:prose-a:text-emerald-400 prose-code:text-emerald-500 break-words ">
                 <MarkdownRenderer content={message.content} />
               </div>
             )}
           </div>
         )}
 
+
         {/* Action Buttons */}
         {!showLoading && !isEditing && (
-          <div className="flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+          <div className="flex gap-0">
             {!isUser && message.content && (
               <>
                 <CopyButton text={message.content} />
+                <DownloadButton content={message.content} />
                 {isLastMessage && !loading && (
                   <Button
                     onClick={handleRegenerate}
                     size="sm"
                     variant="ghost"
-                    className="h-8 gap-1 text-xs hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400"
+                    className="h-8 gap-1 text-xs hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400 text-zinc-500 dark:text-zinc-400"
                   >
                     <RefreshCw className="h-3 w-3" />
-                    Regenerate
                   </Button>
                 )}
               </>
@@ -199,10 +203,9 @@ export function MessageBubble({
                 onClick={handleEdit}
                 size="sm"
                 variant="ghost"
-                className="h-8 gap-1.5 text-xs hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all"
+                className="opacity-0 group-hover:opacity-100 h-8 gap-1.5 text-xs hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-200"
               >
-                <Edit2 className="h-3 w-3" />
-                Edit
+                <Pencil className="h-2 w-2" />
               </Button>
             )}
           </div>
