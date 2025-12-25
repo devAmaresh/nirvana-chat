@@ -14,7 +14,7 @@ import { LandingView } from "./landing-view"
 
 export function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { hydrateFromLocalStorage, error, getChat, chats } = useChatStore()
+  const { hydrateFromLocalStorage, getChat, chats } = useChatStore()
   const { chatId, personaId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
@@ -89,11 +89,11 @@ export function AppLayout() {
 
 
         {/* Error Banner */}
-        {error && (
+        {/* {error && (
           <div className="bg-red-500/10 border-b border-red-500/20 px-4 py-3">
             <p className="text-sm text-red-500 dark:text-red-400 text-center font-medium">{error}</p>
           </div>
-        )}
+        )} */}
 
 
         {/* Main Content */}
