@@ -6,18 +6,23 @@
 @theme inline {
   --font-sans: "Geist", "Geist Fallback", system-ui, sans-serif;
   --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+  
+  /* Neon Green AI Fiesta Theme */
+  --color-neon-green: #00ff87;
+  --color-neon-green-dark: #1B5948;
+  --color-neon-green-light: #33ffaa;
 }
 
 @layer base {
   * {
-    @apply border-zinc-200 dark:border-zinc-800 outline-blue-500/50;
+    @apply border-zinc-200 dark:border-zinc-800 outline-emerald-500/50;
   }
   body {
     @apply bg-white dark:bg-black text-zinc-900 dark:text-zinc-100 antialiased;
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar with neon green */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -33,7 +38,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(217 91% 60%);
+  background: #00ff87;
 }
 
 /* Message animation */
@@ -52,6 +57,39 @@
   animation: message-fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Neon glow effect */
+@keyframes neon-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px #00ff87, 0 0 10px #00ff87, 0 0 20px #00ff87;
+  }
+  50% {
+    box-shadow: 0 0 10px #00ff87, 0 0 20px #00ff87, 0 0 30px #00ff87, 0 0 40px #00ff87;
+  }
+}
+
+.neon-glow {
+  animation: neon-glow 2s ease-in-out infinite;
+}
+
+/* Shimmer effect for buttons */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.shimmer-effect {
+  background: linear-gradient(90deg, #00ff87 0%, #00cc6a 50%, #00ff87 100%);
+  background-size: 200% auto;
+}
+
+.shimmer-effect:hover {
+  animation: shimmer 2s linear infinite;
+}
+
 /* Shiki code block styling */
 .shiki-wrapper pre {
   margin: 0 !important;
@@ -65,20 +103,10 @@
   line-height: 1.7;
 }
 
-/* Selection styling */
+/* Selection styling with neon green */
 ::selection {
-  background: hsl(var(--primary) / 0.5);
-  color: hsl(var(--primary-foreground));
-}
-
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+  background: rgba(0, 255, 135, 0.3);
+  color: inherit;
 }
 
 /* Fade in up animation */
@@ -96,4 +124,22 @@
 .animate-fade-in-up {
   animation: fade-in-up 0.6s ease-out forwards;
   opacity: 0;
+}
+
+/* Pulse animation for active states */
+@keyframes pulse-neon {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.pulse-neon {
+  animation: pulse-neon 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+button{
+  cursor: pointer;
 }

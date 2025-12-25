@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { GoogleGenerativeAI } from "@google/generative-ai"
+import { getAllPersonas } from "./personas"
 
 export interface Message {
   id: string
@@ -14,30 +15,34 @@ export interface Chat {
   messages: Message[]
   createdAt: number
   updatedAt: number
+  personaId: string
 }
 
 interface ChatState {
   chats: Chat[]
-  activeChatId: string | null
+  activePersonaId: string
   loading: boolean
   error: string | null
-  showLanding: boolean
+  abortController: AbortController | null
 }
 
 interface ChatActions {
-  createNewChat: () => string
-  setActiveChat: (id: string) => void
+  createNewChat: (personaId?: string) => string
+  setActivePersona: (personaId: string) => void
   addMessage: (chatId: string, message: Omit<Message, "id" | "timestamp">) => void
   updateLastMessage: (chatId: string, content: string) => void
   appendToLastMessage: (chatId: string, chunk: string) => void
-  sendMessage: (prompt: string) => Promise<void>
+  sendMessage: (chatId: string, prompt: string) => Promise<void>
+  stopGeneration: () => void
+  regenerateLastMessage: (chatId: string) => Promise<void>
+  editMessage: (chatId: string, messageId: string, newContent: string) => Promise<void>
   deleteChat: (chatId: string) => void
+  getChat: (chatId: string) => Chat | undefined
+  getChatsByPersona: (personaId: string) => Chat[]
   hydrateFromLocalStorage: () => void
   persistToLocalStorage: () => void
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
-  showLandingView: () => void
-  hideLandingView: () => void
 }
 
 type ChatStore = ChatState & ChatActions
@@ -47,35 +52,41 @@ const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || ""
 
 const generateId = () => Math.random().toString(36).substring(2, 15)
 
-// Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY)
 
 export const useChatStore = create<ChatStore>((set, get) => ({
   chats: [],
-  activeChatId: null,
+  activePersonaId: "general",
   loading: false,
   error: null,
-  showLanding: true,
+  abortController: null,
 
-  createNewChat: () => {
+  createNewChat: (personaId?: string) => {
     const newChat: Chat = {
       id: generateId(),
       title: "New Chat",
       messages: [],
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      personaId: personaId || get().activePersonaId,
     }
     set((state) => ({
       chats: [newChat, ...state.chats],
-      activeChatId: newChat.id,
-      showLanding: false,
     }))
     get().persistToLocalStorage()
     return newChat.id
   },
 
-  setActiveChat: (id: string) => {
-    set({ activeChatId: id, error: null, showLanding: false })
+  setActivePersona: (personaId: string) => {
+    set({ activePersonaId: personaId })
+  },
+
+  getChat: (chatId: string) => {
+    return get().chats.find(c => c.id === chatId)
+  },
+
+  getChatsByPersona: (personaId: string) => {
+    return get().chats.filter(c => c.personaId === personaId)
   },
 
   addMessage: (chatId: string, message: Omit<Message, "id" | "timestamp">) => {
@@ -141,53 +152,45 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     }))
   },
 
-  sendMessage: async (prompt: string) => {
-    const {
-      activeChatId,
-      addMessage,
-      appendToLastMessage,
-      setLoading,
-      setError,
-      createNewChat,
-      showLanding,
-      persistToLocalStorage,
-    } = get()
+  sendMessage: async (chatId: string, prompt: string) => {
+    const { addMessage, appendToLastMessage, setLoading, setError, persistToLocalStorage } = get()
 
-    let chatId = activeChatId
-    if (!chatId || showLanding) {
-      chatId = createNewChat()
-    }
+    const chat = get().chats.find((c) => c.id === chatId)
+    if (!chat) throw new Error("Chat not found")
 
     setError(null)
     addMessage(chatId, { role: "user", content: prompt })
     addMessage(chatId, { role: "assistant", content: "" })
     setLoading(true)
 
+    const abortController = new AbortController()
+    set({ abortController })
+
     try {
-      const chat = get().chats.find((c) => c.id === chatId)
-      if (!chat) throw new Error("Chat not found")
+      const personas = getAllPersonas()
+      const persona = personas.find(p => p.id === chat.personaId) || personas[0]
 
-      // Initialize the model
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-2.5-flash",
+        systemInstruction: persona.systemPrompt
+      })
 
-      // Build conversation history for chat context
       const history = chat.messages
-        .filter((m) => m.content.trim() !== "" && m.role !== "assistant" || m.content.trim() !== "")
-        .slice(0, -2) // Exclude the current user message and empty assistant message
+        .filter((m) => m.content.trim() !== "")
+        .slice(0, -2)
         .map((m) => ({
           role: m.role === "user" ? "user" : "model",
           parts: [{ text: m.content }],
         }))
 
-      // Start chat with history
-      const chatSession = model.startChat({
-        history: history,
+      const chatSession = model.startChat({ history })
+
+      const result = await chatSession.sendMessageStream(prompt, {
+        signal: abortController.signal
       })
 
-      // Stream the response
-      const result = await chatSession.sendMessageStream(prompt)
-
       for await (const chunk of result.stream) {
+        if (abortController.signal.aborted) break
         const chunkText = chunk.text()
         if (chunkText) {
           appendToLastMessage(chatId, chunkText)
@@ -196,25 +199,211 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
       persistToLocalStorage()
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred"
-      setError(errorMessage)
-      get().updateLastMessage(chatId, `Error: ${errorMessage}`)
+      if (error instanceof Error && error.name === 'AbortError') {
+        const currentContent = get().chats.find((c) => c.id === chatId)?.messages.slice(-1)[0]?.content || ""
+        get().updateLastMessage(chatId, currentContent + "\n\n[Generation stopped by user]")
+      } else {
+        const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred"
+        setError(errorMessage)
+        get().updateLastMessage(chatId, `Error: ${errorMessage}`)
+      }
     } finally {
       setLoading(false)
+      set({ abortController: null })
+    }
+  },
+
+  stopGeneration: () => {
+    const { abortController } = get()
+    if (abortController) {
+      abortController.abort()
+      set({ loading: false, abortController: null })
+    }
+  },
+
+  regenerateLastMessage: async (chatId: string) => {
+    const { chats, loading } = get()
+    if (loading) return
+
+    const chat = chats.find(c => c.id === chatId)
+    if (!chat || chat.messages.length < 2) return
+
+    // Find last user message
+    let lastUserMessage = null
+    for (let i = chat.messages.length - 1; i >= 0; i--) {
+      if (chat.messages[i].role === 'user') {
+        lastUserMessage = chat.messages[i]
+        break
+      }
+    }
+
+    if (!lastUserMessage) return
+
+    // Remove all messages after the last user message
+    set((state) => ({
+      chats: state.chats.map((c) => {
+        if (c.id === chatId) {
+          const messages = [...c.messages]
+          const lastUserIndex = messages.lastIndexOf(lastUserMessage)
+          return {
+            ...c,
+            messages: messages.slice(0, lastUserIndex + 1),
+            updatedAt: Date.now()
+          }
+        }
+        return c
+      }),
+    }))
+
+    get().persistToLocalStorage()
+
+    // Generate new response
+    const updatedChat = get().chats.find((c) => c.id === chatId)
+    if (!updatedChat) return
+
+    get().addMessage(chatId, { role: "assistant", content: "" })
+    get().setLoading(true)
+
+    const abortController = new AbortController()
+    set({ abortController })
+
+    try {
+      const personas = getAllPersonas()
+      const persona = personas.find(p => p.id === updatedChat.personaId) || personas[0]
+
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-2.5-flash",
+        systemInstruction: persona.systemPrompt
+      })
+
+      const history = updatedChat.messages
+        .slice(0, -1)
+        .filter((m) => m.content.trim() !== "")
+        .map((m) => ({
+          role: m.role === "user" ? "user" : "model",
+          parts: [{ text: m.content }],
+        }))
+
+      const chatSession = model.startChat({ history })
+
+      const result = await chatSession.sendMessageStream(lastUserMessage.content, {
+        signal: abortController.signal
+      })
+
+      for await (const chunk of result.stream) {
+        if (abortController.signal.aborted) break
+        const chunkText = chunk.text()
+        if (chunkText) {
+          get().appendToLastMessage(chatId, chunkText)
+        }
+      }
+
+      get().persistToLocalStorage()
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        const currentContent = get().chats.find((c) => c.id === chatId)?.messages.slice(-1)[0]?.content || ""
+        get().updateLastMessage(chatId, currentContent + "\n\n[Generation stopped by user]")
+      } else {
+        const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred"
+        get().setError(errorMessage)
+        get().updateLastMessage(chatId, `Error: ${errorMessage}`)
+      }
+    } finally {
+      get().setLoading(false)
+      set({ abortController: null })
+    }
+  },
+
+  editMessage: async (chatId: string, messageId: string, newContent: string) => {
+    const { chats, loading } = get()
+    
+    if (loading) return
+    
+    const chat = chats.find(c => c.id === chatId)
+    if (!chat) return
+
+    const messageIndex = chat.messages.findIndex(m => m.id === messageId)
+    if (messageIndex === -1 || chat.messages[messageIndex].role !== 'user') return
+
+    // Update message and remove everything after it
+    set((state) => ({
+      chats: state.chats.map((c) => {
+        if (c.id === chatId) {
+          const messages = [...c.messages]
+          messages[messageIndex] = { ...messages[messageIndex], content: newContent }
+          return {
+            ...c,
+            messages: messages.slice(0, messageIndex + 1),
+            updatedAt: Date.now()
+          }
+        }
+        return c
+      }),
+    }))
+
+    get().persistToLocalStorage()
+
+    // Generate new response
+    const updatedChat = get().chats.find((c) => c.id === chatId)
+    if (!updatedChat) return
+
+    get().addMessage(chatId, { role: "assistant", content: "" })
+    get().setLoading(true)
+
+    const abortController = new AbortController()
+    set({ abortController })
+
+    try {
+      const personas = getAllPersonas()
+      const persona = personas.find(p => p.id === updatedChat.personaId) || personas[0]
+
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-2.5-flash",
+        systemInstruction: persona.systemPrompt
+      })
+
+      const history = updatedChat.messages
+        .slice(0, -1)
+        .filter((m) => m.content.trim() !== "")
+        .map((m) => ({
+          role: m.role === "user" ? "user" : "model",
+          parts: [{ text: m.content }],
+        }))
+
+      const chatSession = model.startChat({ history })
+
+      const result = await chatSession.sendMessageStream(newContent, {
+        signal: abortController.signal
+      })
+
+      for await (const chunk of result.stream) {
+        if (abortController.signal.aborted) break
+        const chunkText = chunk.text()
+        if (chunkText) {
+          get().appendToLastMessage(chatId, chunkText)
+        }
+      }
+
+      get().persistToLocalStorage()
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        const currentContent = get().chats.find((c) => c.id === chatId)?.messages.slice(-1)[0]?.content || ""
+        get().updateLastMessage(chatId, currentContent + "\n\n[Generation stopped by user]")
+      } else {
+        const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred"
+        get().setError(errorMessage)
+        get().updateLastMessage(chatId, `Error: ${errorMessage}`)
+      }
+    } finally {
+      get().setLoading(false)
+      set({ abortController: null })
     }
   },
 
   deleteChat: (chatId: string) => {
-    set((state) => {
-      const newChats = state.chats.filter((c) => c.id !== chatId)
-      const newActiveChatId =
-        state.activeChatId === chatId ? (newChats.length > 0 ? newChats[0].id : null) : state.activeChatId
-      return {
-        chats: newChats,
-        activeChatId: newActiveChatId,
-        showLanding: newChats.length === 0 || (state.activeChatId === chatId && newChats.length === 0),
-      }
-    })
+    set((state) => ({
+      chats: state.chats.filter((c) => c.id !== chatId),
+    }))
     get().persistToLocalStorage()
   },
 
@@ -224,11 +413,11 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const data = JSON.parse(stored)
-        set({
-          chats: data.chats || [],
-          activeChatId: data.activeChatId || null,
-          showLanding: true,
-        })
+        const chats = (data.chats || []).map((chat: any) => ({
+          ...chat,
+          personaId: chat.personaId || 'general'
+        }))
+        set({ chats })
       }
     } catch (error) {
       console.error("Failed to hydrate from localStorage:", error)
@@ -238,8 +427,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   persistToLocalStorage: () => {
     if (typeof window === "undefined") return
     try {
-      const { chats, activeChatId } = get()
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ chats, activeChatId }))
+      const { chats } = get()
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ chats }))
     } catch (error) {
       console.error("Failed to persist to localStorage:", error)
     }
@@ -247,6 +436,4 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
   setLoading: (loading: boolean) => set({ loading }),
   setError: (error: string | null) => set({ error }),
-  showLandingView: () => set({ showLanding: true, activeChatId: null }),
-  hideLandingView: () => set({ showLanding: false }),
 }))

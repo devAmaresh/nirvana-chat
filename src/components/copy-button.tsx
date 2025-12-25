@@ -25,10 +25,10 @@ export function CopyButton({ text, className }: CopyButtonProps) {
       onClick={handleCopy}
       className={cn(
         "inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold transition-all",
-        "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100",
-        "bg-zinc-100/60 dark:bg-zinc-800/60 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 shadow-lg backdrop-blur-sm",
-        "ring-1 ring-zinc-200/30 dark:ring-zinc-800/30 hover:ring-zinc-200/50 dark:hover:ring-zinc-800/50",
-        copied && "text-emerald-500 dark:text-emerald-400 ring-emerald-500/40 bg-emerald-500/10",
+        "text-zinc-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400",
+        "bg-zinc-100/60 dark:bg-zinc-800/60 hover:bg-emerald-500/10 dark:hover:bg-emerald-500/20 shadow-lg backdrop-blur-sm",
+        "ring-1 ring-zinc-200/30 dark:ring-zinc-800/30 hover:ring-emerald-500/30 dark:hover:ring-emerald-500/40",
+        copied && "text-emerald-600 dark:text-emerald-400 ring-emerald-500/40 bg-emerald-500/20",
         className,
       )}
     >
