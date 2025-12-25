@@ -70,6 +70,40 @@ A feature-rich chat experience that goes beyond simple question-and-answer:
   - Chat titles auto-generated from first message
   - Timestamps for every message
 
+### 🔍 **Advanced Search & Export Features**
+
+Find and preserve your conversations with powerful search and export capabilities:
+
+- **Fuzzy Search Across All Chats**
+  - Powered by **Fuse.js** for intelligent, typo-tolerant search [web:41][web:44]
+  - Search across chat titles, messages, and personas
+  - Real-time search results as you type
+  - Keyboard shortcuts for quick access (Ctrl/Cmd + K)
+  - Search filters by persona, date range, and message author
+  - Highlighted search terms in results
+  - Jump directly to matching conversations
+
+- **Export Chat History**
+  - **Markdown Export** - Download conversations in `.md` format [web:46]
+    - Preserves all formatting, code blocks, and structure
+    - Perfect for documentation, sharing, or archiving
+    - Includes metadata (timestamps, persona info)
+    - Single chat or bulk export options
+  
+  - **DOCX Export** - Professional document format [web:45][web:48]
+    - Convert chats to Microsoft Word documents
+    - Maintains formatting, headings, and code blocks
+    - Ideal for reports, presentations, or formal documentation
+    - Auto-generated table of contents for multi-chat exports
+    - Custom styling with your brand colors
+
+- **Export Options**
+  - Export individual conversations or entire persona spaces
+  - Batch export all chats at once
+  - Date range filtering for exports
+  - Include/exclude AI responses or user messages only
+  - File naming conventions (timestamp, persona name, custom)
+
 ### 🎨 **Modern, Beautiful UI/UX**
 
 A polished interface designed for productivity and aesthetics:
@@ -176,6 +210,8 @@ Organize your chats by persona and switch between different AI assistants seamle
 - **Beautiful syntax highlighting** for code blocks
 - **Dark/Light mode** with smooth transitions
 - **Custom personas** for specialized tasks
+- **Fuzzy search** to find any conversation instantly
+- **Export to Markdown/DOCX** for sharing and archiving
 
 ---
 
@@ -189,29 +225,34 @@ Organize your chats by persona and switch between different AI assistants seamle
 ### Quick Start
 
 1. **Clone the repository**
-   ```bash
+   ```
    git clone https://github.com/yourusername/nirvana-chat.git
    cd nirvana-chat
    ```
 
 2. **Install dependencies**
-   ```bash
+   ```
    npm install
    ```
 
-3. **Set up environment variables**
+3. **Install additional packages for search and export**
+   ```
+   npm install fuse.js @mohtasham/md-to-docx file-saver
+   ```
+
+4. **Set up environment variables**
    
    Create a `.env` file in the root directory:
-   ```env
+   ```
    VITE_GEMINI_API_KEY=your_api_key_here
    ```
 
-4. **Start the development server**
-   ```bash
+5. **Start the development server**
+   ```
    npm run dev
    ```
 
-5. **Open your browser**
+6. **Open your browser**
    
    Navigate to `http://localhost:5173`
 
@@ -223,6 +264,21 @@ Organize your chats by persona and switch between different AI assistants seamle
 1. Select a persona from the sidebar or create a new one
 2. Type your message in the chat input
 3. Press Enter or click Send to get AI responses
+
+### Searching Conversations
+1. Press **Ctrl/Cmd + K** or click the search icon
+2. Type your query (supports typos and partial matches)
+3. See real-time results across all chats
+4. Click any result to jump to that conversation
+
+### Exporting Chats
+1. Open any chat or persona space
+2. Click the **Export** button in the header
+3. Choose format:
+   - **Markdown** - For documentation and sharing
+   - **DOCX** - For formal documents and reports
+4. Select export options (current chat, all chats, date range)
+5. Download starts automatically
 
 ### Creating Custom Personas
 1. Click "Spaces" in the sidebar
@@ -266,6 +322,11 @@ Organize your chats by persona and switch between different AI assistants seamle
 - **Zustand 5.0** - Lightweight state management
 - **Local Storage** - Persistent data storage
 
+### Search & Export
+- **Fuse.js 7.0** - Fuzzy search library
+- **@mohtasham/md-to-docx** - Markdown to DOCX converter
+- **file-saver** - Client-side file downloads
+
 ### AI & Markdown
 - **Google Generative AI** - Gemini API integration
 - **React Markdown** - Markdown rendering
@@ -289,13 +350,19 @@ nirvana-chat/
 │   │   ├── app-layout.tsx   # Main layout wrapper
 │   │   ├── chat-window.tsx  # Chat interface
 │   │   ├── sidebar.tsx      # Navigation sidebar
+│   │   ├── search-dialog.tsx # Global search modal
+│   │   ├── export-menu.tsx   # Export options menu
 │   │   └── ...
 │   ├── lib/                 # Utilities & stores
 │   │   ├── chat-store.ts    # Chat state management
 │   │   ├── personas.ts      # Persona definitions
 │   │   ├── theme-store.ts   # Theme management
+│   │   ├── search.ts        # Fuse.js search config
+│   │   ├── export.ts        # Export utilities
 │   │   └── utils.ts         # Helper functions
 │   ├── hooks/               # Custom React hooks
+│   │   ├── use-search.ts    # Search hook
+│   │   └── use-export.ts    # Export hook
 │   ├── App.tsx              # Main app component
 │   └── main.tsx             # Entry point
 ├── public/                  # Static assets
@@ -306,7 +373,7 @@ nirvana-chat/
 
 ## 🧪 Scripts
 
-```bash
+```
 # Development
 npm run dev          # Start dev server (Vite)
 
@@ -326,7 +393,7 @@ npm run lint         # Run ESLint
 
 Edit `src/lib/personas.ts`:
 
-```typescript
+```
 {
   id: "custom-assistant",
   name: "Custom Assistant",
@@ -334,6 +401,33 @@ Edit `src/lib/personas.ts`:
   systemPrompt: "Your custom system prompt here",
   description: "Brief description of what this persona does"
 }
+```
+
+### Configuring Search
+
+Customize search behavior in `src/lib/search.ts` [web:44][web:47]:
+
+```
+import Fuse from 'fuse.js';
+
+export const searchOptions = {
+  keys: ['title', 'messages.content', 'persona.name'],
+  threshold: 0.3, // Lower = more strict, Higher = more fuzzy
+  includeScore: true,
+  minMatchCharLength: 2,
+};
+```
+
+### Export Templates
+
+Customize export formatting in `src/lib/export.ts`:
+
+```
+export const exportToMarkdown = (chat) => {
+  return `# ${chat.title}\n\n` +
+         `**Persona:** ${chat.persona.name}\n\n` +
+         chat.messages.map(msg => `**${msg.role}:** ${msg.content}`).join('\n\n');
+};
 ```
 
 ### Styling
@@ -344,7 +438,7 @@ The app uses Tailwind CSS. Customize colors and themes in `tailwind.config.js` o
 
 Modify the Gemini model settings in `src/lib/chat-store.ts`:
 
-```typescript
+```
 const genAI = new GoogleGenerativeAI(apiKey)
 const model = genAI.getGenerativeModel({ 
   model: "gemini-pro",
@@ -383,6 +477,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🙏 Acknowledgments
 
 - **Google Gemini** for the powerful AI capabilities
+- **Fuse.js** for the amazing fuzzy search functionality
 - **shadcn/ui** for the beautiful component patterns
 - **Vercel** for the amazing developer experience with Vite
 
@@ -401,3 +496,4 @@ For questions or feedback, please open an issue on GitHub.
 ⭐ Star this repo if you find it helpful!
 
 </div>
+
