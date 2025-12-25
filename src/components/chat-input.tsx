@@ -8,12 +8,14 @@ interface ChatInputProps {
   chatId: string | null;
   personaId?: string;
   onMessageSent?: (chatId: string) => void;
+  showFooter?: boolean;
 }
 
 export function ChatInput({
   chatId,
   personaId,
   onMessageSent,
+  showFooter = true,
 }: ChatInputProps) {
   const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -98,6 +100,7 @@ export function ChatInput({
             </Button>
           )}
         </div>
+        {showFooter && (
         <p className="mt-2 text-center text-xs text-zinc-500/50 dark:text-zinc-400/40 hidden md:block">
           Press{" "}
           <kbd
@@ -115,6 +118,7 @@ export function ChatInput({
           </kbd>
           for new line
         </p>
+        )}
       </div>
     </div>
   );

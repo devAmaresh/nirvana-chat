@@ -78,7 +78,7 @@ export function LandingView() {
 
         {/* Input Area - Cleaner */}
         <div className="w-full max-w-3xl">
-          <ChatInput chatId={null} onMessageSent={handleMessageSent} />  
+          <ChatInput chatId={null} onMessageSent={handleMessageSent}/>  
         </div>
 
         {/* Suggestions Grid - Modern Cards */}

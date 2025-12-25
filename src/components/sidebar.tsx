@@ -11,9 +11,10 @@ import {
   PanelLeftClose,
   PanelLeft,
   LayoutGrid,
+  Search,
 } from "lucide-react";
-// import { getPersonaById } from "@/lib/personas";
 import { useThemeStore } from "@/lib/theme-store";
+import { SearchModal } from "@/components/search-modal";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const navigate = useNavigate();
   const { chatId } = useParams();
   const location = useLocation();
@@ -127,6 +129,21 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           </button>
         </div>
 
+        {/* Search Button */}
+        <div className={cn("px-3 pb-2", isCollapsed && "px-2")}>
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className={cn(
+              "flex w-full items-center gap-2 rounded-lg py-2 text-sm font-medium transition-colors text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800",
+              isCollapsed ? "justify-center px-0" : "px-3"
+            )}
+            title={isCollapsed ? "Search" : ""}
+          >
+            <Search className="h-4 w-4" strokeWidth={2} />
+            {!isCollapsed && "Search chats"}
+          </button>
+        </div>
+
         {/* Spaces Navigation */}
         <div className={cn("px-3 pb-2", isCollapsed && "px-2")}>
           <button
@@ -189,8 +206,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             ) : (
               <div className="space-y-0.5">
                 {!isCollapsed &&
-                  chats.map((chat, _index) => {
-                    // const persona = getPersonaById(chat.personaId);
+                  chats.map((chat) => {
                     return (
                       <button
                         key={chat.id}
@@ -233,6 +249,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           </div>
         )}
       </aside>
+
+      {/* Search Modal */}
+      <SearchModal open={isSearchOpen} onOpenChange={setIsSearchOpen} />
     </>
   );
 }
