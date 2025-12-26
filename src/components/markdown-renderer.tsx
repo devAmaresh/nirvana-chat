@@ -55,7 +55,7 @@ const CodeBlock = memo(function CodeBlock({ code, language }: { code: string; la
           {language && <span className="ml-3 text-xs font-medium text-zinc-500/70 dark:text-zinc-400/70">{language}</span>}
         </div>
         <div className="opacity-0 transition-opacity group-hover/code:opacity-100">
-          <CopyButton text={code} />
+          <CopyButton text={code} place="top"/>
         </div>
       </div>
 

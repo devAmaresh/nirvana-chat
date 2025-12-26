@@ -10,6 +10,7 @@ import { SpaceDetailView } from "@/components/space-detail-view"
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { LandingView } from "./landing-view"
+import { GlobalTooltip } from "./tooltip"
 
 
 export function AppLayout() {
@@ -62,7 +63,7 @@ export function AppLayout() {
   return (
     <div className="flex h-screen overflow-hidden bg-linear-to-tr from-emerald-500/10 via-white to-emerald-500/15 dark:from-emerald-500/15 dark:via-black dark:to-emerald-500/15">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
+      <GlobalTooltip />
 
       <div className="flex flex-1 flex-col min-w-0">
         {/* Header */}
