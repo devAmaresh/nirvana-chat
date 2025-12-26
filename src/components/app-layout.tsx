@@ -33,7 +33,7 @@ export function AppLayout() {
         navigate('/', { replace: true })
       }
     }
-  }, [chatId, chats, getChat, navigate])
+  }, [chatId])
 
 
   // Determine which view to show
@@ -60,13 +60,14 @@ export function AppLayout() {
 
 
   return (
-    <div className="flex h-screen overflow-hidden bg-white dark:bg-black">
+    <div className="flex h-screen overflow-hidden bg-linear-to-tr from-emerald-500/10 via-white to-emerald-500/15 dark:from-emerald-500/15 dark:via-black dark:to-emerald-500/15">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
 
       <div className="flex flex-1 flex-col min-w-0">
         {/* Header */}
-        <header className="flex-shrink-0 border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-black/80 backdrop-blur-3xl">
+        <header className="shrink-0 border-b border-zinc-200
+         dark:border-zinc-800 bg-white/80 dark:bg-black/80 backdrop-blur-3xl">
           <div className="flex items-center justify-between px-4 py-2">
             <div className="flex items-center gap-3">
               <Button
@@ -77,9 +78,6 @@ export function AppLayout() {
               >
                 <Menu className="h-5 w-5" />
               </Button>
-              <h2 className="text-lg font-black bg-gradient-to-r from-emerald-600 to-green-600 dark:from-emerald-400 dark:to-green-400 bg-clip-text text-transparent tracking-tight">
-                Nirvana
-              </h2>
             </div>
             <div className="flex items-center gap-3">
               <ThemeToggle />

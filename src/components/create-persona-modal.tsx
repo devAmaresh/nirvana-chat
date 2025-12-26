@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button"
 import { Plus, Sparkles, Save, Copy } from "lucide-react"
 import { addCustomPersona, updatePersona, getPersonaById } from "@/lib/personas"
-import { hash } from "crypto"
 
 interface CreatePersonaModalProps {
   open: boolean
