@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button"
 import { Plus, Sparkles, Save, Copy } from "lucide-react"
 import { addCustomPersona, updatePersona, getPersonaById } from "@/lib/personas"
+import { hash } from "crypto"
 
 interface CreatePersonaModalProps {
   open: boolean
@@ -72,6 +73,7 @@ export function CreatePersonaModal({ open, onOpenChange, onPersonaCreated, editP
         emoji,
         description: description.trim() || `Custom ${name} assistant`,
         systemPrompt: systemPrompt.trim(),
+        id: "custom-" + `custom-${Date.now().toString()+ Math.random().toString(36).substring(2, 8)}`
       })
       
       if (onPersonaCreated) {
@@ -136,7 +138,7 @@ export function CreatePersonaModal({ open, onOpenChange, onPersonaCreated, editP
             {/* Name */}
             <div>
               <label className="block text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-                Space Name *
+                Space Name <span className="text-red-400">*</span>
               </label>
               <input
                 type="text"
@@ -187,7 +189,7 @@ export function CreatePersonaModal({ open, onOpenChange, onPersonaCreated, editP
             {/* System Prompt */}
             <div>
               <label className="block text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-                System Instructions *
+                System Instructions <span className="text-red-400">*</span>
               </label>
               <textarea
                 value={systemPrompt}

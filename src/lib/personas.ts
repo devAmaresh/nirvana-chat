@@ -92,13 +92,28 @@ export const getPersonaById = (id: string): Persona => {
   return allPersonas.find(p => p.id === id) || builtInPersonas[0]
 }
 
-export const addCustomPersona = (persona: Omit<Persona, 'id' | 'isCustom'>): Persona => {
+// Check if persona already exists by ID
+export const findExistingPersona = (persona: Persona): Persona | null => {
+  const allPersonas = getAllPersonas()
+  return allPersonas.find(p => p.id === persona.id) || null
+}
+
+// Add custom persona (returns existing if ID already exists)
+export const addCustomPersona = (persona: Persona): Persona => {
   const customPersonas = loadCustomPersonas()
+  
+  // Check if already exists by ID
+  const existing = customPersonas.find(p => p.id === persona.id)
+  if (existing) {
+    return existing
+  }
+  
+  // Ensure it's marked as custom
   const newPersona: Persona = {
     ...persona,
-    id: 'custom-' + Date.now(),
     isCustom: true
   }
+  
   customPersonas.push(newPersona)
   saveCustomPersonas(customPersonas)
   return newPersona
@@ -144,8 +159,10 @@ export const getCustomPersonas = (): Persona[] => {
   return loadCustomPersonas()
 }
 
+// Encode persona to URL (includes ID for sharing)
 export const encodePersonaToUrl = (persona: Persona): string => {
   const data = {
+    id: persona.id,
     name: persona.name,
     emoji: persona.emoji,
     prompt: persona.systemPrompt,
@@ -154,11 +171,12 @@ export const encodePersonaToUrl = (persona: Persona): string => {
   return btoa(encodeURIComponent(JSON.stringify(data)))
 }
 
+// Decode persona from URL (preserves shared ID)
 export const decodePersonaFromUrl = (encoded: string): Persona | null => {
   try {
     const decoded = JSON.parse(decodeURIComponent(atob(encoded)))
     return {
-      id: 'custom-' + Date.now(),
+      id: decoded.id || `custom-${Date.now().toString()+ Math.random().toString(36).substring(2, 8)}`,
       name: decoded.name || 'Custom Persona',
       emoji: decoded.emoji || '✨',
       systemPrompt: decoded.prompt || '',
