@@ -64,7 +64,7 @@ export function LandingView() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center p-6 overflow-y-auto">
       <div className="flex w-full max-w-4xl flex-col items-center space-y-10">
-        {/* Hero Section - Compact & Modern */}
+
         <div className="text-center space-y-3 w-full">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-zinc-100 to-zinc-50 dark:from-zinc-900 dark:to-zinc-800 border border-zinc-200 dark:border-zinc-700 mb-4">
             <Sparkles className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
@@ -76,12 +76,10 @@ export function LandingView() {
           
         </div>
 
-        {/* Input Area - Cleaner */}
         <div className="w-full max-w-3xl">
           <ChatInput chatId={null} onMessageSent={handleMessageSent}/>  
         </div>
 
-        {/* Suggestions Grid - Modern Cards */}
         <div className="w-full max-w-3xl">
           <p className="text-center text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-5 uppercase tracking-wide">
             Try asking about
@@ -99,7 +97,6 @@ export function LandingView() {
                   "active:translate-y-0 active:scale-[0.98]"
                 )}
               >
-                {/* Icon */}
                 <div className={cn(
                   "flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300",
                   "group-hover:scale-110",
@@ -107,8 +104,7 @@ export function LandingView() {
                 )}>
                   <suggestion.icon className={cn("h-5 w-5", suggestion.iconColor)} strokeWidth={2} />
                 </div>
-                
-                {/* Content */}
+
                 <div className="space-y-1">
                   <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     {suggestion.title}
@@ -118,7 +114,6 @@ export function LandingView() {
                   </p>
                 </div>
 
-                {/* Hover Indicator */}
                 <ArrowRight className={cn(
                   "absolute bottom-4 right-4 h-3.5 w-3.5 opacity-0 transition-all duration-300",
                   "group-hover:opacity-100 group-hover:translate-x-0.5",
@@ -129,7 +124,6 @@ export function LandingView() {
           </div>
         </div>
 
-        {/* Footer Note */}
         <p className="text-xs text-zinc-400 dark:text-zinc-600 text-center max-w-md">
           Start a conversation or choose a suggestion above to begin
         </p>

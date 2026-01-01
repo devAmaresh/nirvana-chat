@@ -44,7 +44,6 @@ const CodeBlock = memo(function CodeBlock({ code, language }: { code: string; la
 
   return (
     <div className="group/code relative my-4 overflow-hidden rounded-xl border border-zinc-200/50 dark:border-zinc-800/50 dark:bg-[#0d1117] bg-[#f6f8fa] shadow-lg">
-      {/* Header */}
       <div className="flex items-center justify-between border-b border-zinc-200/30 dark:border-zinc-800/30 dark:bg-[#161b22] bg-[#d1d1d1] px-4 py-2">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5">

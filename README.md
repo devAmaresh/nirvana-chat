@@ -51,6 +51,16 @@ A feature-rich chat experience that goes beyond simple question-and-answer:
   - Powered by Google's Gemini 2.5 Flash model for fast, intelligent responses
   - Stop generation mid-stream if you get the answer you need
 
+- **Image Upload & Vision Capabilities**
+  - **Upload images** via click or drag-and-drop (up to 3 images per message)
+  - **Paste images** directly from clipboard using Ctrl+V
+  - Support for screenshots, photos, diagrams, and more
+  - Gemini AI analyzes images and provides context-aware responses
+  - Perfect for code debugging (upload screenshots), diagram explanations, visual questions, and more
+  - Image previews with easy removal before sending
+  - Maximum 3 images per message, 20MB per image
+  - Supports all common formats: JPEG, PNG, GIF, WebP
+
 - **Rich Markdown Support**
   - Beautiful rendering of formatted text, lists, tables, and quotes
   - **Syntax-highlighted code blocks** for 100+ programming languages via Shiki
@@ -60,11 +70,17 @@ A feature-rich chat experience that goes beyond simple question-and-answer:
 - **Powerful Message Actions**
   - **Copy to Clipboard** - One-click copy for any message
   - **Regenerate Response** - Get a different answer to the same question
-  - **Edit & Resend** - Modify your message and get a new response
+  - **Edit & Resend** - Modify your message and images, then get a new response
   - **Delete Chats** - Remove conversations you no longer need
+
+- **Smart Input Validation**
+  - Maximum 10,000 words per message to ensure quality responses
+  - Toast notifications for file size limits and upload errors
+  - Elegant error handling with shadcn/ui Sonner toasts
 
 - **Persistent Chat History**
   - All conversations saved automatically in browser's local storage
+  - Images stored securely in base64 format
   - Resume conversations exactly where you left off
   - Search through past chats to find previous discussions
   - Chat titles auto-generated from first message
@@ -207,6 +223,7 @@ Organize your chats by persona and switch between different AI assistants seamle
 
 ### ✨ Key Highlights
 - **Real-time streaming** responses as you type
+- **Image upload & vision AI** - Upload or paste images for visual analysis
 - **Beautiful syntax highlighting** for code blocks
 - **Dark/Light mode** with smooth transitions
 - **Custom personas** for specialized tasks
@@ -263,7 +280,9 @@ Organize your chats by persona and switch between different AI assistants seamle
 ### Starting a Chat
 1. Select a persona from the sidebar or create a new one
 2. Type your message in the chat input
-3. Press Enter or click Send to get AI responses
+3. **Optional**: Click the image icon or paste (Ctrl+V) to add up to 3 images
+4. Press Enter or click Send to get AI responses
+5. AI will analyze both your text and images (if provided)
 
 ### Searching Conversations
 1. Press **Ctrl/Cmd + K** or click the search icon

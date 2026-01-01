@@ -134,7 +134,6 @@ export function CreatePersonaModal({ open, onOpenChange, onPersonaCreated, editP
 
         <div className="overflow-y-auto flex-1 px-2 bg-white dark:bg-zinc-900">
           <div className="space-y-5 mt-4">
-            {/* Name */}
             <div>
               <label className="block text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">
                 Space Name <span className="text-red-400">*</span>
@@ -148,7 +147,6 @@ export function CreatePersonaModal({ open, onOpenChange, onPersonaCreated, editP
               />
             </div>
 
-            {/* Emoji Selector */}
             <div>
               <label className="block text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">
                 Choose Icon
@@ -171,7 +169,6 @@ export function CreatePersonaModal({ open, onOpenChange, onPersonaCreated, editP
               </div>
             </div>
 
-            {/* Description */}
             <div>
               <label className="block text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">
                 Description
@@ -185,7 +182,6 @@ export function CreatePersonaModal({ open, onOpenChange, onPersonaCreated, editP
               />
             </div>
 
-            {/* System Prompt */}
             <div>
               <label className="block text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">
                 System Instructions <span className="text-red-400">*</span>

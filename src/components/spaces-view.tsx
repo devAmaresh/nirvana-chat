@@ -130,7 +130,6 @@ export function SpacesView() {
   return (
     <div className="flex-1 overflow-y-auto bg-white dark:bg-zinc-950">
       <div className="max-w-6xl mx-auto px-6 py-8">
-        {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -155,7 +154,6 @@ export function SpacesView() {
             </Button>
           </div>
 
-          {/* Search Bar */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-zinc-400" />
             <input
@@ -176,7 +174,6 @@ export function SpacesView() {
           </div>
         </motion.div>
 
-        {/* My Spaces Section */}
         {userSpaces.length > 0 && (
           <div className="mb-10">
             <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-3 px-1">
@@ -238,7 +235,6 @@ export function SpacesView() {
                       </div>
                     </motion.button>
 
-                    {/* Copied Toast */}
                     {isCopied && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
@@ -251,7 +247,6 @@ export function SpacesView() {
                       </motion.div>
                     )}
 
-                    {/* Menu Dropdown */}
                     {activeMenu === persona.id && (
                       <motion.div
                         initial={{ opacity: 0, scale: 0.95, y: -10 }}
@@ -289,7 +284,6 @@ export function SpacesView() {
           </div>
         )}
 
-        {/* Templates Section */}
         {templateSpaces.length > 0 && (
           <div>
             <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-3 px-1">
@@ -326,7 +320,6 @@ export function SpacesView() {
                       </p>
                     </div>
 
-                    {/* Use Template Badge */}
                     <div className="mt-3 text-xs text-emerald-600 dark:text-emerald-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
                       Click to customize →
                     </div>
@@ -337,7 +330,6 @@ export function SpacesView() {
           </div>
         )}
 
-        {/* Empty State */}
         {filteredPersonas.length === 0 && (
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
@@ -372,7 +364,6 @@ export function SpacesView() {
         )}
       </div>
 
-      {/* Create/Edit Modal */}
       <CreatePersonaModal
         open={showCreateModal || editingPersona !== null || templatePersona !== null}
         onOpenChange={(open) => {
@@ -392,7 +383,6 @@ export function SpacesView() {
         }}
       />
 
-      {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deletingPersona} onOpenChange={(open) => !open && setDeletingPersona(null)}>
         <AlertDialogContent className="bg-white dark:bg-zinc-900">
           <AlertDialogHeader>

@@ -5,6 +5,7 @@ import { useThemeStore } from "./lib/theme-store";
 import { useChatStore } from "./lib/chat-store";
 import { decodePersonaFromUrl } from "./lib/personas";
 import { CreateSpaceImport } from "./components/CreateSpaceImport";
+import { Toaster } from "./components/ui/sonner";
 
 const App = () => {
   const { theme } = useThemeStore();
@@ -30,13 +31,16 @@ const App = () => {
   }, [searchParams, setActivePersona, createNewChat, navigate]);
 
   return (
-    <Routes>
-      <Route path="/" element={<AppLayout />} />
-      <Route path="/c/:chatId" element={<AppLayout />} />
-      <Route path="/spaces" element={<AppLayout />} />
-      <Route path="/spaces/:personaId" element={<AppLayout />} />
-      <Route path="/spaces/create" element={<CreateSpaceImport />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<AppLayout />} />
+        <Route path="/c/:chatId" element={<AppLayout />} />
+        <Route path="/spaces" element={<AppLayout />} />
+        <Route path="/spaces/:personaId" element={<AppLayout />} />
+        <Route path="/spaces/create" element={<CreateSpaceImport />} />
+      </Routes>
+      <Toaster />
+    </>
   );
 };
 

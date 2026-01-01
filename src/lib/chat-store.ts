@@ -2,11 +2,17 @@ import { create } from "zustand"
 import { GoogleGenerativeAI } from "@google/generative-ai"
 import { getAllPersonas } from "./personas"
 
+export interface MessageImage {
+  data: string // base64 encoded
+  mimeType: string
+}
+
 export interface Message {
   id: string
   role: "user" | "assistant"
   content: string
   timestamp: number
+  images?: MessageImage[]
 }
 
 export interface Chat {
@@ -32,10 +38,10 @@ interface ChatActions {
   addMessage: (chatId: string, message: Omit<Message, "id" | "timestamp">) => void
   updateLastMessage: (chatId: string, content: string) => void
   appendToLastMessage: (chatId: string, chunk: string) => void
-  sendMessage: (chatId: string, prompt: string) => Promise<void>
+  sendMessage: (chatId: string, prompt: string, images?: MessageImage[]) => Promise<void>
   stopGeneration: () => void
   regenerateLastMessage: (chatId: string) => Promise<void>
-  editMessage: (chatId: string, messageId: string, newContent: string) => Promise<void>
+  editMessage: (chatId: string, messageId: string, newContent: string, images?: MessageImage[]) => Promise<void>
   deleteChat: (chatId: string) => void
   getChat: (chatId: string) => Chat | undefined
   getChatsByPersona: (personaId: string) => Chat[]
@@ -152,14 +158,14 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     }))
   },
 
-  sendMessage: async (chatId: string, prompt: string) => {
+  sendMessage: async (chatId: string, prompt: string, images?: MessageImage[]) => {
     const { addMessage, appendToLastMessage, setLoading, setError, persistToLocalStorage } = get()
 
     const chat = get().chats.find((c) => c.id === chatId)
     if (!chat) throw new Error("Chat not found")
 
     setError(null)
-    addMessage(chatId, { role: "user", content: prompt })
+    addMessage(chatId, { role: "user", content: prompt, images })
     addMessage(chatId, { role: "assistant", content: "" })
     setLoading(true)
 
@@ -178,14 +184,40 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       const history = chat.messages
         .filter((m) => m.content.trim() !== "")
         .slice(0, -2)
-        .map((m) => ({
-          role: m.role === "user" ? "user" : "model",
-          parts: [{ text: m.content }],
-        }))
+        .map((m) => {
+          const parts: any[] = [{ text: m.content }]
+          if (m.images && m.images.length > 0) {
+            m.images.forEach(img => {
+              parts.push({
+                inlineData: {
+                  data: img.data,
+                  mimeType: img.mimeType
+                }
+              })
+            })
+          }
+          return {
+            role: m.role === "user" ? "user" : "model",
+            parts
+          }
+        })
 
       const chatSession = model.startChat({ history })
 
-      const result = await chatSession.sendMessageStream(prompt, {
+      // Prepare message parts with images
+      const messageParts: any[] = [{ text: prompt }]
+      if (images && images.length > 0) {
+        images.forEach(img => {
+          messageParts.push({
+            inlineData: {
+              data: img.data,
+              mimeType: img.mimeType
+            }
+          })
+        })
+      }
+
+      const result = await chatSession.sendMessageStream(messageParts, {
         signal: abortController.signal
       })
 
@@ -279,14 +311,40 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       const history = updatedChat.messages
         .slice(0, -1)
         .filter((m) => m.content.trim() !== "")
-        .map((m) => ({
-          role: m.role === "user" ? "user" : "model",
-          parts: [{ text: m.content }],
-        }))
+        .map((m) => {
+          const parts: any[] = [{ text: m.content }]
+          if (m.images && m.images.length > 0) {
+            m.images.forEach(img => {
+              parts.push({
+                inlineData: {
+                  data: img.data,
+                  mimeType: img.mimeType
+                }
+              })
+            })
+          }
+          return {
+            role: m.role === "user" ? "user" : "model",
+            parts
+          }
+        })
 
       const chatSession = model.startChat({ history })
 
-      const result = await chatSession.sendMessageStream(lastUserMessage.content, {
+      // Prepare message parts with images
+      const messageParts: any[] = [{ text: lastUserMessage.content }]
+      if (lastUserMessage.images && lastUserMessage.images.length > 0) {
+        lastUserMessage.images.forEach(img => {
+          messageParts.push({
+            inlineData: {
+              data: img.data,
+              mimeType: img.mimeType
+            }
+          })
+        })
+      }
+
+      const result = await chatSession.sendMessageStream(messageParts, {
         signal: abortController.signal
       })
 
@@ -314,7 +372,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     }
   },
 
-  editMessage: async (chatId: string, messageId: string, newContent: string) => {
+  editMessage: async (chatId: string, messageId: string, newContent: string, images?: MessageImage[]) => {
     const { chats, loading } = get()
     
     if (loading) return
@@ -330,7 +388,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       chats: state.chats.map((c) => {
         if (c.id === chatId) {
           const messages = [...c.messages]
-          messages[messageIndex] = { ...messages[messageIndex], content: newContent }
+          messages[messageIndex] = { ...messages[messageIndex], content: newContent, images }
           return {
             ...c,
             messages: messages.slice(0, messageIndex + 1),
@@ -365,14 +423,40 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       const history = updatedChat.messages
         .slice(0, -1)
         .filter((m) => m.content.trim() !== "")
-        .map((m) => ({
-          role: m.role === "user" ? "user" : "model",
-          parts: [{ text: m.content }],
-        }))
+        .map((m) => {
+          const parts: any[] = [{ text: m.content }]
+          if (m.images && m.images.length > 0) {
+            m.images.forEach(img => {
+              parts.push({
+                inlineData: {
+                  data: img.data,
+                  mimeType: img.mimeType
+                }
+              })
+            })
+          }
+          return {
+            role: m.role === "user" ? "user" : "model",
+            parts
+          }
+        })
 
       const chatSession = model.startChat({ history })
 
-      const result = await chatSession.sendMessageStream(newContent, {
+      // Prepare message parts with images
+      const messageParts: any[] = [{ text: newContent }]
+      if (images && images.length > 0) {
+        images.forEach(img => {
+          messageParts.push({
+            inlineData: {
+              data: img.data,
+              mimeType: img.mimeType
+            }
+          })
+        })
+      }
+
+      const result = await chatSession.sendMessageStream(messageParts, {
         signal: abortController.signal
       })
 
