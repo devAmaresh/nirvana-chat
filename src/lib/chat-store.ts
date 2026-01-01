@@ -184,6 +184,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       const history = chat.messages
         .filter((m) => m.content.trim() !== "")
         .slice(0, -2)
+        .slice(-6)
         .map((m) => {
           const parts: any[] = [{ text: m.content }]
           if (m.images && m.images.length > 0) {
@@ -311,6 +312,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       const history = updatedChat.messages
         .slice(0, -1)
         .filter((m) => m.content.trim() !== "")
+        .slice(-6)
         .map((m) => {
           const parts: any[] = [{ text: m.content }]
           if (m.images && m.images.length > 0) {
@@ -423,6 +425,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       const history = updatedChat.messages
         .slice(0, -1)
         .filter((m) => m.content.trim() !== "")
+        .slice(-6) // Keep only last 6 messages
         .map((m) => {
           const parts: any[] = [{ text: m.content }]
           if (m.images && m.images.length > 0) {
