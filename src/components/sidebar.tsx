@@ -1,6 +1,6 @@
 import type React from "react";
 import { useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation, Link } from "react-router-dom";
 import { useChatStore } from "@/lib/chat-store";
 import { cn } from "@/lib/utils";
 import {
@@ -78,23 +78,30 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         )}
       >
         {/* Header */}
-        <div className={cn("flex items-center justify-between px-4 py-2.5 border-b border-zinc-200 dark:border-zinc-800",
-          !isCollapsed?"":"pb-[14px]"
-        )}>
+        <div
+          className={cn(
+            "flex items-center justify-between px-4 py-2.5 border-b border-zinc-200 dark:border-zinc-800",
+            !isCollapsed ? "" : "pb-[14px]"
+          )}
+        >
           <div className="flex items-center gap-3 overflow-hidden">
             {!isCollapsed && (
-              <div className="flex items-center gap-2 items-center">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-emerald-500/20 to-emerald-500/0 border border-emerald-500/20">
-                <img
-                  src={theme === "dark" ? "/logo-dark.png" : "/logo-light.png"}
-                  alt="Logo"
-                  className="h-6 w-6"
-                />
+              <Link to="/">
+                <div className="flex items-center gap-2 items-center">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-emerald-500/20 to-emerald-500/0 border border-emerald-500/20">
+                    <img
+                      src={
+                        theme === "dark" ? "/logo-dark.png" : "/logo-light.png"
+                      }
+                      alt="Logo"
+                      className="h-6 w-6"
+                    />
+                  </div>
+                  <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Nirvana
+                  </span>
                 </div>
-                <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                  Nirvana
-                </span>
-              </div>
+              </Link>
             )}
           </div>
           <div className="flex items-center gap-1">
