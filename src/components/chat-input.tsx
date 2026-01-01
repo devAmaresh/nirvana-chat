@@ -1,6 +1,6 @@
 import type React from "react";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useChatStore, type MessageImage } from "@/lib/chat-store";
+import { useChatStore, type MessageImage } from "@/lib/store/chat-store";
 import { Send, Square, ImagePlus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";

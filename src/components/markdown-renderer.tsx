@@ -2,7 +2,7 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { CopyButton } from "@/components/copy-button"
 import { useEffect, useState, useRef, memo } from "react"
-import { useThemeStore } from "@/lib/theme-store"
+import { useThemeStore } from "@/lib/store/theme-store"
 
 interface MarkdownRendererProps {
   content: string

@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { getPersonaById } from "@/lib/personas";
-import { useChatStore } from "@/lib/chat-store";
+import { useChatStore } from "@/lib/store/chat-store";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatInput } from "@/components/chat-input";

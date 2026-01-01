@@ -1,4 +1,4 @@
-import { useThemeStore } from "@/lib/theme-store"
+import { useThemeStore } from "@/lib/store/theme-store"
 import { Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 

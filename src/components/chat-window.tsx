@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { useChatStore } from "@/lib/chat-store"
+import { useChatStore } from "@/lib/store/chat-store"
 import { MessageBubble } from "@/components/message-bubble"
 import { MessageSquare } from "lucide-react"
 

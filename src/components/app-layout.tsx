@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate, useLocation } from "react-router-dom"
-import { useChatStore } from "@/lib/chat-store"
+import { useChatStore } from "@/lib/store/chat-store"
 import { Sidebar } from "@/components/sidebar"
 import { ChatWindow } from "@/components/chat-window"
 import { ChatInput } from "@/components/chat-input"

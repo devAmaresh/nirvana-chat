@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
-import type { Message, MessageImage } from "@/lib/chat-store";
-import { useChatStore } from "@/lib/chat-store";
+import type { Message, MessageImage } from "@/lib/store/chat-store";
+import { useChatStore } from "@/lib/store/chat-store";
 import { cn } from "@/lib/utils";
 import { CopyButton } from "@/components/copy-button";
 import { DownloadButton } from "@/components/downloadButton";

@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { GoogleGenerativeAI } from "@google/generative-ai"
-import { getAllPersonas } from "./personas"
+import { getAllPersonas } from "../personas"
 
 export interface MessageImage {
   data: string // base64 encoded

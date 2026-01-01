@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
-import { useChatStore } from "@/lib/chat-store"
+import { useChatStore } from "@/lib/store/chat-store"
 import {
   Dialog,
   DialogContent,

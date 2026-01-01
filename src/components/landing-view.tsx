@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { useChatStore } from "@/lib/chat-store"
+import { useChatStore } from "@/lib/store/chat-store"
 import { Code, FileText, Lightbulb, Zap, ArrowRight, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ChatInput } from "./chat-input"

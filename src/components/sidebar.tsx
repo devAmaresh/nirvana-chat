@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState } from "react";
 import { useNavigate, useParams, useLocation, Link } from "react-router-dom";
-import { useChatStore } from "@/lib/chat-store";
+import { useChatStore } from "@/lib/store/chat-store";
 import { cn } from "@/lib/utils";
 import {
   Plus,
@@ -13,7 +13,7 @@ import {
   LayoutGrid,
   Search,
 } from "lucide-react";
-import { useThemeStore } from "@/lib/theme-store";
+import { useThemeStore } from "@/lib/store/theme-store";
 import { SearchModal } from "@/components/search-modal";
 
 interface SidebarProps {

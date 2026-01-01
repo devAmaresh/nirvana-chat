@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { Routes, Route, useNavigate, useSearchParams } from "react-router-dom";
 import { AppLayout } from "./components/app-layout";
-import { useThemeStore } from "./lib/theme-store";
-import { useChatStore } from "./lib/chat-store";
+import { useThemeStore } from "./lib/store/theme-store";
+import { useChatStore } from "./lib/store/chat-store";
 import { decodePersonaFromUrl } from "./lib/personas";
 import { CreateSpaceImport } from "./components/CreateSpaceImport";
 import { Toaster } from "./components/ui/sonner";
